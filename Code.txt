@@ -1,0 +1,110 @@
+import eia
+import enerpy
+
+import pmdarima as pm
+import pandas as pd
+import requests
+import matplotlib.pyplot as plt
+import numpy as np
+from datetime import date
+import matplotlib.ticker as ticker
+from statsmodels.tsa.stattools import adfuller as adf
+from statsmodels.tsa.seasonal import seasonal_decompose
+import statsmodels.api as sm
+import numpy as np
+import pandas as pd
+from scipy.stats import norm
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+from datetime import datetime
+import requests
+from io import BytesIO
+
+api_key = "d7584472bd307f4ec602af521ec6e6f4"
+api = eia.API(api_key)
+
+
+###Lower 48
+series_search = api.data_by_series(series='NG.NW2_EPG0_SWO_R48_BCF.W')
+
+for key,value in series_search.items():
+    print(key,value)
+
+df = pd.DataFrame(series_search)
+df.columns = ['Lower 48']
+
+###Salt
+series_search1 = api.data_by_series(series="NG.NW2_EPG0_SSO_R33_BCF.W")
+
+for key,value in series_search1.items():
+    print(key,value)
+
+df1 = pd.DataFrame(series_search1)
+df1.columns = ['Salt']
+
+###NonSalt
+series_search2 = api.data_by_series(series='NG.NW2_EPG0_SNO_R33_BCF.W')
+for key,value in series_search2.items():
+    print(key,value)
+
+df2 = pd.DataFrame(series_search2)
+df2.columns = ['NonSalt']
+
+###South Central
+series_search3 = api.data_by_series(series='NG.NW2_EPG0_SWO_R33_BCF.W')
+for key,value in series_search3.items():
+    print(key,value)
+
+df3 = pd.DataFrame(series_search3)
+df3.columns = ['South Central']
+
+###East
+series_search4 = api.data_by_series(series='NG.NW2_EPG0_SWO_R31_BCF.W')
+for key,value in series_search4.items():
+    print(key,value)
+
+df4 = pd.DataFrame(series_search4)
+df4.columns = ['East']
+
+
+###Midwest
+series_search5 = api.data_by_series(series='NG.NW2_EPG0_SWO_R32_BCF.W')
+for key,value in series_search5.items():
+    print(key,value)
+
+df5 = pd.DataFrame(series_search5)
+df5.columns = ['Midwest']
+
+###Mountain
+series_search6 = api.data_by_series(series='NG.NW2_EPG0_SWO_R34_BCF.W')
+for key,value in series_search6.items():
+    print(key,value)
+
+df6 = pd.DataFrame(series_search6)
+df6.columns = ['Mountain']
+
+###Pacific
+series_search7 = api.data_by_series(series='NG.NW2_EPG0_SWO_R35_BCF.W')
+for key,value in series_search7.items():
+    print(key,value)
+
+df7 = pd.DataFrame(series_search7)
+df7.columns = ['Pacific']
+
+print(df)
+print(df1)
+print(df2)
+print(df3)
+print(df4)
+print(df5)
+print(df6)
+print(df7)
+
+Merge=pd.concat([df,df1, df2, df3, df4, df5, df6, df7], axis = 1)
+
+Merge['date'] = pd.date_range(start='01/01/2010', periods=len(Merge), freq='W-FRI')
+Merge=Merge.set_index('date')
+
+print(Merge)
+
+Merge.to_csv(r'C:\Users\qtaillefer\Desktop\EIA.csv')
